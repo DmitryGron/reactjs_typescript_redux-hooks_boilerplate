@@ -25,10 +25,10 @@ type RegistrationTypes = {
 
 export const login = (credentials: Pick<RegistrationTypes, 'email'|'password'>) => async (dispatch: Dispatch) => {
   dispatch(fetchUserLoginRequest());
-  if (process.env.REACT_APP_BE_PROD !== 'false') {
-    console.log('notMock', process.env.REACT_APP_BE_PROD);
+  if (process.env.REACT_APP_BE_PROD === 'false') {
+    console.log('Mock', process.env.REACT_APP_BE_PROD);
 
-    userLogin(credentials)
+    fakeLogin(credentials)
     .then(
         (user: any) => {
           console.log('user', user);
@@ -41,9 +41,9 @@ export const login = (credentials: Pick<RegistrationTypes, 'email'|'password'>) 
         }
     );
   } else {
-    console.log('Mock', process.env.REACT_APP_BE_PROD);
+    console.log('notMock', process.env.REACT_APP_BE_PROD);
 
-    fakeLogin(credentials)
+    userLogin(credentials)
     .then(
         (user: any) => {
           console.log('user', user);
@@ -60,9 +60,10 @@ export const login = (credentials: Pick<RegistrationTypes, 'email'|'password'>) 
 
 
 export const register = (credentials: RegistrationTypes) => async (dispatch: Dispatch) => {
+  console.log('REACT_APP_BE_PROD :>> ', process.env.REACT_APP_BE_PROD);
   dispatch(fetchUserRegisterRequest());
-  if (process.env.REACT_APP_BE_PROD !== 'mock') {
-    userRegistration(credentials)
+  if (process.env.REACT_APP_BE_PROD === 'false') {
+    fakeRegister(credentials)
     .then(
         (res: any) => {
           dispatch(fetchUserRegisterSuccess(res));
@@ -72,7 +73,7 @@ export const register = (credentials: RegistrationTypes) => async (dispatch: Dis
         }
     );
   } else {
-    fakeRegister(credentials)
+    userRegistration(credentials)
     .then(
         (res: any) => {
           dispatch(fetchUserRegisterSuccess(res));
